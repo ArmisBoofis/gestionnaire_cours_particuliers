@@ -17,9 +17,17 @@ Une fois les manipulations finies, on peut désactiver l'environement virtuel :
 
 - **Désactiver l'environement virtuel :** `deactivate`
 
+## Créer une migration et l'exécuter avec `alembic`
+
+- **Créer les fichiers de migration :** `alembic revision --autogenerate -m <message>`
+- **Exécuter les fichiers de migration :** `alembic upgrade head`
+- **Aficher la migration actuelle :** `alembic current`
+- **Afficher l'historique des migrations :** `alembic history`
+
 ## Librairies nécessaires pour faire tourner le script
 
 - **SQLAlchemy :** `pip3 install SQLAlchemy` (https://www.sqlalchemy.org)
+- **Alembic :** `pip3 install alembic` (https://alembic.sqlalchemy.org)
 - **InquirerPy :** `pip3 install InquirerPy` (https://inquirerpy.readthedocs.io)
 
 ## Comment lancer le script
