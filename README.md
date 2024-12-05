@@ -29,6 +29,8 @@ Une fois les manipulations finies, on peut désactiver l'environement virtuel :
 - **SQLAlchemy :** `pip3 install SQLAlchemy` (https://www.sqlalchemy.org)
 - **Alembic :** `pip3 install alembic` (https://alembic.sqlalchemy.org)
 - **InquirerPy :** `pip3 install InquirerPy` (https://inquirerpy.readthedocs.io)
+- **phonenumbers** `pip3 install phonenumbers` (https://github.com/daviddrysdale/python-phonenumbers)
+- **email-validator** : `pip3 install email-validator` (https://github.com/JoshData/python-email-validator)
 
 ## Comment lancer le script
 

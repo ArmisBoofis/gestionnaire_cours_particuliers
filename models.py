@@ -33,6 +33,18 @@ class Student(Base):
         back_populates="student", cascade="all, delete-orphan"
     )
 
+    def __init__(
+        self, first_name="", last_name="", phone_number="", email_address="", address=""
+    ):
+        """Constructor override to attribure default values
+        to attributes at Python-level."""
+
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone_number = phone_number
+        self.email_address = email_address
+        self.address = address
+
     def __repr__(self) -> str:
         """Returns a description of a given student as a string."""
         return (
@@ -54,7 +66,7 @@ class HourlyRate(Base):
     price: Mapped[float] = mapped_column(DECIMAL(precision=5, scale=2))
 
     courses: Mapped[List["Course"]] = relationship(
-        back_populates="student", cascade="all, delete-orphan"
+        back_populates="hourly_rate", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
