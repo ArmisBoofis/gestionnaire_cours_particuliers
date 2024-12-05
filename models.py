@@ -1,6 +1,7 @@
 """This file contains the description of the three models used in this small app,
 using SQLAlchemy. We define the model Student, HourlyRate and Course."""
 
+import uuid
 import datetime
 from typing import List
 from sqlalchemy import String, DECIMAL, ForeignKey, Uuid, Date
@@ -16,7 +17,7 @@ class Student(Base):
 
     __tablename__ = "student"
 
-    id: Mapped[str] = mapped_column(Uuid, primary_key=True)
+    id: Mapped[str] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
 
     first_name: Mapped[str] = mapped_column(String(50))
 
@@ -58,7 +59,7 @@ class HourlyRate(Base):
 
     __tablename__ = "hourly_rate"
 
-    id: Mapped[str] = mapped_column(Uuid, primary_key=True)
+    id: Mapped[str] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
 
     name: Mapped[str] = mapped_column(String(50))
 
@@ -79,7 +80,7 @@ class Course(Base):
 
     __tablename__ = "course"
 
-    id: Mapped[str] = mapped_column(Uuid, primary_key=True)
+    id: Mapped[str] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
 
     date: Mapped[datetime.date] = mapped_column(Date())
 
