@@ -2,6 +2,7 @@
 phone numbers and email addresses. These validators take the form of
 functions accepting the user input and returning a boolean."""
 
+from decimal import Decimal, InvalidOperation
 import phonenumbers
 from email_validator import validate_email, EmailNotValidError
 
@@ -36,4 +37,20 @@ def validate_email_address(email_address: str) -> bool:
         return len(email_info.normalized) <= 75
 
     except EmailNotValidError:
+        return False
+
+
+def validate_decimal(
+    input_str: str, min_value=Decimal("0.0"), max_value=Decimal("999.99")
+) -> bool:
+    """Validates that the input can be represented as a float
+    and that it falls in the specified range."""
+
+    try:
+        # We convert the input and check if it has a suitable value
+        input_decimal = Decimal(input_str)
+        return min_value <= input_decimal <= max_value
+
+    except InvalidOperation:
+        # This exception is triggered when the converion above fails
         return False

@@ -40,6 +40,8 @@ class Student(Base):
         """Constructor override to attribure default values
         to attributes at Python-level."""
 
+        super().__init__()
+
         self.first_name = first_name
         self.last_name = last_name
         self.phone_number = phone_number
@@ -49,8 +51,8 @@ class Student(Base):
     def __repr__(self) -> str:
         """Returns a description of a given student as a string."""
         return (
-            f"{self.first_name!r} {self.last_name!r} <{self.email_address!r}>"
-            f" - Téléphone : {self.phone_number!r} | Adresse : {self.address!r}"
+            f"{self.first_name} {self.last_name} <{self.email_address}>"
+            f" - Téléphone : {self.phone_number} | Adresse : {self.address}"
         )
 
 
@@ -70,9 +72,18 @@ class HourlyRate(Base):
         back_populates="hourly_rate", cascade="all, delete-orphan"
     )
 
+    def __init__(self, name="", price=0.0):
+        """Constructor override to attribure default values
+        to attributes at Python-level."""
+
+        super().__init__()
+
+        self.name = name
+        self.price = price
+
     def __repr__(self) -> str:
         """Returns a description of a given hourly rate as a string."""
-        return f"Student(id={self.id!r}, name={self.name!r}," f" price={self.price!r})"
+        return f"{self.name} - {self.price}€"
 
 
 class Course(Base):

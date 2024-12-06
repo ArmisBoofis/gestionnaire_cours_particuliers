@@ -3,9 +3,9 @@ for various pieces of information. This is done with InquirerPy and includes
 validation of the data provided by the user."""
 
 from InquirerPy import inquirer
-from validators import validate_phone_number, validate_email_address
-from sanitizers import sanitize_phone_number, sanitize_email_address
-from models import Student
+from validators import validate_phone_number, validate_email_address, validate_decimal
+from sanitizers import sanitize_phone_number, sanitize_email_address, sanitize_decimal
+from models import Student, HourlyRate
 
 
 def prompt_student(student=Student()) -> None:
@@ -55,3 +55,29 @@ def prompt_student(student=Student()) -> None:
 
     # We return the modified student instance
     return student
+
+
+def prompt_hourly_rate(hourly_rate=HourlyRate()):
+    """Function prompting the user to enter the data related to a hourly rate.
+    The arguments can be used to specify default values for each field
+    (useful when displaying the edition prompt)."""
+
+    print("Veuillez entrer les informations relatives au taux horaire :")
+
+    hourly_rate.name = inquirer.text(
+        message="Nom du taux :",
+        default=hourly_rate.name,
+        validate=lambda result: 50 >= len(result) >= 3,
+        invalid_message="Le nom doit comporter entre 3 et 50 caractères.",
+    ).execute()
+
+    hourly_rate.price = inquirer.text(
+        message="Tarif (en euros) :",
+        default=str(hourly_rate.price),
+        validate=validate_decimal,
+        invalid_message="Le tarif horaire doit être compris entre 0€ et 999.99€.",
+        transformer=sanitize_decimal,
+        filter=sanitize_decimal,
+    ).execute()
+
+    return hourly_rate

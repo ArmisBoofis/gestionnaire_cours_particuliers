@@ -6,7 +6,7 @@ from enum import Enum
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
-from menus import students_menu
+from menus import students_menu, houlry_rates_menu
 
 
 class MainMenuChoices(Enum):
@@ -16,6 +16,7 @@ class MainMenuChoices(Enum):
     STUDENTS = 2
     RATES = 3
     QUIT_APP = 4
+    HOURLY_RATES = 5
 
 
 if __name__ == "__main__":
@@ -31,6 +32,7 @@ if __name__ == "__main__":
             choices=[
                 Choice(MainMenuChoices.COURSES, "Gérer les cours"),
                 Choice(MainMenuChoices.STUDENTS, "Gérer les élèves"),
+                Choice(MainMenuChoices.HOURLY_RATES, "Gérer les taux horaire"),
                 Choice(MainMenuChoices.QUIT_APP, "Quitter le gestionnaire"),
             ],
         ).execute()
@@ -38,5 +40,8 @@ if __name__ == "__main__":
         # We display the sub-menu corresponding to the user choice
         if current_choice == MainMenuChoices.STUDENTS:
             students_menu()
+
+        if current_choice == MainMenuChoices.HOURLY_RATES:
+            houlry_rates_menu()
 
     print("On se revoit prochainement pour des aventures de folie !")
