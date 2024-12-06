@@ -6,8 +6,7 @@ from enum import Enum
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
-from student_manager import StudentManager
-from prompts import prompt_student
+from student_controller import StudentController
 
 
 class StudentsMenuChoices(Enum):
@@ -34,9 +33,14 @@ def students_menu() -> None:
     ).execute()
 
     # Object used to interact with the students table inside the database
-    student_manager = StudentManager()
+    student_controller = StudentController()
 
     # We perform the action corresponding to the user choice
     if user_choice == StudentsMenuChoices.CREATE:
-        student = prompt_student()
-        student_manager.create_student(student)
+        student_controller.create_student()
+
+    elif user_choice == StudentsMenuChoices.EDIT:
+        student_controller.edit_student()
+
+    elif user_choice == StudentsMenuChoices.DELETE:
+        student_controller.delete_student()

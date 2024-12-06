@@ -1,4 +1,4 @@
-"""This file defines the SessionManager class, which contains
+"""This file defines the BaseController class, which contains
 an instance of the connection to the database. This class should
 then be inherited from by controller classes."""
 
@@ -12,7 +12,7 @@ DATABASE_URL = "sqlite+pysqlite:///data.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
 
-class SessionManager:
+class BaseController:
     """Base class for controller classes, containing an
     instance of sessionmaker, to connect to the database."""
 

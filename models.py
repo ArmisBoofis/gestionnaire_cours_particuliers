@@ -49,8 +49,8 @@ class Student(Base):
     def __repr__(self) -> str:
         """Returns a description of a given student as a string."""
         return (
-            f"Student(id={self.id!r}, first_name={self.first_name!r},"
-            f" last_name={self.last_name!r})"
+            f"{self.first_name!r} {self.last_name!r} <{self.email_address!r}>"
+            f" - Téléphone : {self.phone_number!r} | Adresse : {self.address!r}"
         )
 
 
