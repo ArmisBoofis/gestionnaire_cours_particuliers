@@ -21,6 +21,7 @@ Une fois les manipulations finies, on peut désactiver l'environement virtuel :
 
 - **Créer les fichiers de migration :** `alembic revision --autogenerate -m <message>`
 - **Exécuter les fichiers de migration :** `alembic upgrade head`
+- **Revenir à la migration précédente :** `alembic downgrade`
 - **Aficher la migration actuelle :** `alembic current`
 - **Afficher l'historique des migrations :** `alembic history`
 

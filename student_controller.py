@@ -1,4 +1,4 @@
-"""This file defines the StudentManager class, used to
+"""This file defines the StudentController class, used to
 create, edit and delete student instances in the database"""
 
 from base_controller import BaseController

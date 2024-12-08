@@ -2,20 +2,19 @@
 an instance of the connection to the database. This class should
 then be inherited from by controller classes."""
 
-from typing import Type, Callable
+from typing import Type, Callable, Optional
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from InquirerPy import inquirer
-
 from models import Base
+from prompts import prompt_entity_choice
 
 # Points to a sqlite file located in the root folder
 DATABASE_URL = "sqlite+pysqlite:///data.db"
 
 # The <echo> parameter toggles logging from SQL
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL, echo=False)
 
 
 class BaseController:
@@ -23,8 +22,8 @@ class BaseController:
     instance of sessionmaker, and implementing basic operations
     on entities."""
 
-    def __init__(self, model: Type[Base], prompt: Callable[[], Base]):
-        self.session = sessionmaker(engine)
+    def __init__(self, model: Type[Base], prompt: Callable[[Session, Base], Base]):
+        self.session_maker = sessionmaker(engine)
         self.model = model
 
         # This attribute contains a function that displays a form
@@ -35,46 +34,36 @@ class BaseController:
         """Request the information related to a new entity and then
         stores the information in the database."""
 
-        with self.session.begin() as db_session:
-            entity = self.prompt_entity()
+        with self.session_maker.begin() as db_session:
+            # We create a void entity
+            entity = self.model()
+
+            # The prompt function changes the entity according to the user choices
+            self.prompt_entity(db_session, entity)
             db_session.add(entity)
 
-    def edit_entity(self) -> None:
+    def edit_entity(
+        self, prompt_message: str = "Quelle entité voulez-vous modifier ?"
+    ) -> None:
         """Asks the user for an entity to edit, requests the new information,
         and reflect the changes in the database."""
 
-        with self.session.begin() as db_session:
+        with self.session_maker.begin() as db_session:
             # We ask the user to choose an entity to edit
-            chosen_entity = BaseController.ask_for_entity(self.model, db_session)
+            chosen_entity = prompt_entity_choice(db_session, self.model, prompt_message)
 
-            # We retrieve the new information and store it in the database
-            new_entity = self.prompt_entity(chosen_entity)
-            db_session.add(new_entity)
+            # The prompt function changes the entity according to the user choices
+            self.prompt_entity(db_session, chosen_entity)
 
-    def delete_entity(self) -> None:
+    def delete_entity(
+        self, prompt_message: str = "Quelle entité voulez-vous supprimer ?"
+    ) -> None:
         """Asks the user for an entity to delete and then delete the
         corresponding row in the database."""
 
-        with self.session.begin() as db_session:
-            # We ask the user to choose a student to edit
-            chosen_student = BaseController.ask_for_entity(self.model, db_session)
+        with self.session_maker.begin() as db_session:
+            # We ask the user to choose an entity to delete
+            chosen_entity = prompt_entity_choice(db_session, self.model, prompt_message)
 
-            # We delete the corresponding student in the database
-            db_session.delete(chosen_student)
-
-    @classmethod
-    def ask_for_entity(cls, model: Type[Base], current_session: Session) -> Base:
-        """Prints a menu asking the user to choose a student and
-        returns the corresponding instance of the Student class."""
-
-        # List of existing students
-        stmt = select(model)
-        students_list = current_session.scalars(stmt)
-
-        # Menu prompting the user to choose a student to edit
-        chosen_student = inquirer.select(
-            message="Quel élément voulez-vous éditer ?",
-            choices=students_list,
-        ).execute()
-
-        return chosen_student
+            # We delete the corresponding entity in the database
+            db_session.delete(chosen_entity)

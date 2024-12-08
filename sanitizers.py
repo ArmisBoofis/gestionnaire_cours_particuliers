@@ -2,9 +2,13 @@
 applied to the data provided by the user after he typed it. This is
 used to have consistent data formatting inside the database."""
 
+import datetime
+from decimal import Decimal, ROUND_HALF_UP
+
 import phonenumbers
 from email_validator import validate_email
-from decimal import Decimal, ROUND_HALF_UP
+
+from validators import DATE_FORMAT
 
 
 def sanitize_phone_number(raw_phone_number: str, region: str = "FR") -> str:
@@ -41,3 +45,10 @@ def sanitize_decimal(input_str: str, decimal_places: int = 2) -> str:
             Decimal(f"1.{'0' * decimal_places}"), rounding=ROUND_HALF_UP
         )
     )
+
+
+def sanitize_date(input_str: str, date_format: str = DATE_FORMAT):
+    """Parses the date given by the user and returns a Python <date> object."""
+
+    # At this stage, the parsing operation should not raise any exception.
+    return datetime.datetime.strptime(input_str, date_format)

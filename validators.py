@@ -2,9 +2,14 @@
 phone numbers and email addresses. These validators take the form of
 functions accepting the user input and returning a boolean."""
 
+import datetime
+
 from decimal import Decimal, InvalidOperation
 import phonenumbers
 from email_validator import validate_email, EmailNotValidError
+
+# Date format used across the app for validation and formatting
+DATE_FORMAT = "%d/%m/%Y"
 
 
 def validate_phone_number(raw_phone_number: str, region: str = "FR") -> bool:
@@ -53,4 +58,17 @@ def validate_decimal(
 
     except InvalidOperation:
         # This exception is triggered when the converion above fails
+        return False
+
+
+def validate_date(input_str: str, date_format=DATE_FORMAT) -> bool:
+    """Function checking that a date, given as a string, follows
+    the specified format."""
+
+    try:
+        datetime.datetime.strptime(input_str, date_format)
+        return True
+
+    except ValueError:
+        # ValueError is raised in case the above parsing fails
         return False

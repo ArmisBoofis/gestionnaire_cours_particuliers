@@ -7,6 +7,8 @@ from typing import List
 from sqlalchemy import String, DECIMAL, ForeignKey, Uuid, Date
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from validators import DATE_FORMAT
+
 
 class Base(DeclarativeBase):
     """Base class from which all the models derive."""
@@ -37,7 +39,7 @@ class Student(Base):
     def __init__(
         self, first_name="", last_name="", phone_number="", email_address="", address=""
     ):
-        """Constructor override to attribure default values
+        """Constructor override to give default values
         to attributes at Python-level."""
 
         super().__init__()
@@ -51,9 +53,15 @@ class Student(Base):
     def __repr__(self) -> str:
         """Returns a description of a given student as a string."""
         return (
-            f"{self.first_name} {self.last_name} <{self.email_address}>"
+            f"{self.full_name} <{self.email_address}>"
             f" - Téléphone : {self.phone_number} | Adresse : {self.address}"
         )
+
+    @property
+    def full_name(self) -> str:
+        """Concatenation of the first name and last name of the student."""
+
+        return f"{self.first_name} {self.last_name}"
 
 
 class HourlyRate(Base):
@@ -73,7 +81,7 @@ class HourlyRate(Base):
     )
 
     def __init__(self, name="", price=0.0):
-        """Constructor override to attribure default values
+        """Constructor override to give default values
         to attributes at Python-level."""
 
         super().__init__()
@@ -96,7 +104,9 @@ class Course(Base):
     date: Mapped[datetime.date] = mapped_column(Date())
 
     # Duration expressed in hours
-    duration: Mapped[int] = mapped_column()
+    duration: Mapped[float] = mapped_column(DECIMAL(precision=3, scale=2))
+
+    paid: Mapped[bool] = mapped_column()
 
     # ID of the student taking the course
     student_id: Mapped[int] = mapped_column(ForeignKey(f"{Student.__tablename__}.id"))
@@ -110,8 +120,25 @@ class Course(Base):
 
     hourly_rate: Mapped["HourlyRate"] = relationship(back_populates="courses")
 
+    def __init__(self, date=datetime.date.today(), duration=1, paid=False):
+        """Constructor override to give default values to attributes
+        at Python-level."""
+
+        super().__init__()
+
+        self.date = date
+        self.duration = duration
+        self.paid = paid
+
     def __repr__(self) -> str:
         return (
-            f"Course(id={self.id!r}, date={self.date.strftime("%d/%m/%Y")},"
-            f" duration={self.duration} hours, student_id={self.student_id})"
+            f"Cours pour {self.student.full_name} du {self.formatted_date} "
+            f"({self.duration} heures) - {"PAYÉ" if self.paid else "IMPAYÉ"}"
         )
+
+    @property
+    def formatted_date(self) -> str:
+        """Returns the date of the course following the
+        format described in the validators file."""
+
+        return self.date.strftime(DATE_FORMAT)
