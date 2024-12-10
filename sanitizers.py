@@ -51,4 +51,4 @@ def sanitize_date(input_str: str, date_format: str = DATE_FORMAT):
     """Parses the date given by the user and returns a Python <date> object."""
 
     # At this stage, the parsing operation should not raise any exception.
-    return datetime.datetime.strptime(input_str, date_format)
+    return datetime.datetime.strptime(input_str, date_format).date()

@@ -86,7 +86,7 @@ class BaseController:
                 print(f"→ {entity}")
 
     @classmethod
-    def _get_entity_list(cls, current_session: Session, model: Base, limit: int):
+    def _get_entity_list(cls, current_session: Session, model: Base, limit: int | None):
         """Returns a list of the entites from the given model available
         in the database."""
 

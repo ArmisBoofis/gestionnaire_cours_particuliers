@@ -16,6 +16,22 @@ import sanitizers
 from models import Student, HourlyRate, Course, Base
 
 
+def prompt_date(
+    default_date=datetime.date.today(),
+    prompt_message="Veuillez entrer une date :",
+):
+    """Asks the user for a date."""
+
+    return inquirer.text(
+        message=prompt_message,
+        default=default_date.strftime(validators.DATE_FORMAT),
+        validate=validators.validate_date,
+        invalid_message=f"La date fournie ne suit pas le format jj/mm/AAAA"
+        f" (exemple : {datetime.date.today().strftime(validators.DATE_FORMAT)})",
+        filter=sanitizers.sanitize_date,
+    ).execute()
+
+
 def prompt_entity_choice(
     current_session: Session,
     model: Type[Base],

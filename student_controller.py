@@ -22,14 +22,16 @@ class StudentController(BaseController):
 
         with self.session_maker.begin() as db_session:
             # We first retrieve the list of the students
-            students_list = BaseController._get_entity_list(db_session, self.model)
+            students_list = BaseController._get_entity_list(
+                db_session, self.model, None
+            )
 
             for student in students_list:
                 debt = Decimal(0)
 
                 for course in student.courses:
                     if not course.paid:
-                        debt += course.hourly_rate.price
+                        debt += course.hourly_rate.price * course.duration
 
                 color_print(
                     [
