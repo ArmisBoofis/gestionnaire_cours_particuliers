@@ -2,9 +2,9 @@
 an instance of the connection to the database. This class should
 then be inherited from by controller classes."""
 
-from typing import Type, Callable, Optional
+from typing import Type, Callable
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker, Session
 
 from models import Base
@@ -23,7 +23,7 @@ class BaseController:
     on entities."""
 
     def __init__(self, model: Type[Base], prompt: Callable[[Session, Base], Base]):
-        self.session_maker = sessionmaker(engine)
+        self.session_maker = sessionmaker(bind=engine)
         self.model = model
 
         # This attribute contains a function that displays a form
@@ -67,3 +67,29 @@ class BaseController:
 
             # We delete the corresponding entity in the database
             db_session.delete(chosen_entity)
+
+    def display_entity_list(
+        self,
+        limit: int = 15,
+        message: str = "Liste des entités pour la table {self.model.__tablename__}",
+    ) -> None:
+        """Displays the list of the available entites for the given model
+        in the database, within the given limit."""
+
+        # We open a new session and retrieve the list of entities
+        with self.session_maker.begin() as db_session:
+            entity_list = BaseController._get_entity_list(db_session, self.model, limit)
+
+            print(message)
+
+            for entity in entity_list:
+                print(f"→ {entity}")
+
+    @classmethod
+    def _get_entity_list(cls, current_session: Session, model: Base, limit: int):
+        """Returns a list of the entites from the given model available
+        in the database."""
+
+        # We create the query and return the result
+        stmt = select(model).limit(limit) if limit is not None else select(model)
+        return current_session.scalars(stmt)

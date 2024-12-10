@@ -47,6 +47,9 @@ def students_menu() -> None:
     elif user_choice == StudentsMenuChoices.DELETE:
         student_controller.delete_entity()
 
+    elif user_choice == StudentsMenuChoices.LIST:
+        student_controller.display_entity_list(message="Liste des élèves :", limit=None)
+
 
 class CoursesMenuChoices(Enum):
     """Enumeration of the available choices for the courses menu."""
@@ -68,7 +71,7 @@ def courses_menu() -> None:
             Choice(CoursesMenuChoices.CREATE, "Créer un nouveau cours"),
             Choice(CoursesMenuChoices.EDIT, "Éditer un cours existant"),
             Choice(CoursesMenuChoices.DELETE, "Supprimer un cours"),
-            Choice(CoursesMenuChoices.LIST, "Consulter la liste des courss"),
+            Choice(CoursesMenuChoices.LIST, "Consulter la liste des cours"),
         ],
     ).execute()
 
@@ -83,6 +86,11 @@ def courses_menu() -> None:
 
     elif user_choice == CoursesMenuChoices.DELETE:
         courses_controller.delete_entity()
+
+    elif user_choice == CoursesMenuChoices.LIST:
+        courses_controller.display_entity_list(
+            message="Liste des 15 derniers cours donnés :"
+        )
 
 
 class HourlyRatesMenuChoices(Enum):
@@ -119,3 +127,37 @@ def houlry_rates_menu() -> None:
 
     elif user_choice == HourlyRatesMenuChoices.DELETE:
         hourly_rates_controller.delete_entity()
+
+    elif user_choice == HourlyRatesMenuChoices.LIST:
+        hourly_rates_controller.display_entity_list(
+            message="Liste des taux horaires créés :", limit=None
+        )
+
+
+class StatsMenuChoices(Enum):
+    """Enumeration of the available choices for the hourly rates menu."""
+
+    DEBT_PER_STUDENT = auto()
+    GAINS_LAST_MONTH = auto()
+    GAINS_SINCE_DATE = auto()
+
+
+def stats_menu() -> None:
+    """Menu allowing the user to access various pieces of information
+    regarding the gains he made and the debt of the students."""
+
+    # We display the menu
+    user_choice = inquirer.select(
+        message="Statistiques disponibles",
+        choices=[
+            Choice(StatsMenuChoices.DEBT_PER_STUDENT, "Montants dû par les élèves"),
+            Choice(StatsMenuChoices.GAINS_LAST_MONTH, "Gains le mois dernier"),
+            Choice(StatsMenuChoices.GAINS_SINCE_DATE, "Gains depuis une date donnée"),
+        ],
+    ).execute()
+
+    # The stats functions are implemented across the different controllers
+    students_controller = StudentController()
+
+    if user_choice == StatsMenuChoices.DEBT_PER_STUDENT:
+        students_controller.display_debt_per_student()
