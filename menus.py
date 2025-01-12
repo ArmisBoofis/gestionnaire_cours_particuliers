@@ -1,6 +1,5 @@
-"""File containing the definition of the <choice_menu_wrapper> function,
-which allows the script to display choice menus effectively, by specifying
-a list of choice strings associated with actions."""
+"""File containing the definition of the menu functions, which display
+menus asking the user to make various choices and input necessay information."""
 
 from enum import Enum
 from typing import Tuple, Callable
@@ -59,6 +58,11 @@ def courses_menu() -> None:
         [
             ("Créer un nouveau cours", courses_controller.create_entity),
             ("Éditer un cours existant", courses_controller.edit_entity),
+            ("Marquer un cours existant comme payé", courses_controller.mark_as_paid),
+            (
+                "Marquer un cours existant comme impayé",
+                courses_controller.mark_as_unpaid,
+            ),
             ("Supprimer un cours", courses_controller.delete_entity),
             (
                 "Consulter la liste des cours",

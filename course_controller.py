@@ -9,7 +9,7 @@ from InquirerPy.utils import color_print
 from models import Course
 from validators import DATE_FORMAT
 from base_controller import BaseController
-from prompts import prompt_course, prompt_date
+from prompts import prompt_course, prompt_date, prompt_entity_choice
 
 
 class CourseController(BaseController):
@@ -18,6 +18,34 @@ class CourseController(BaseController):
 
     def __init__(self):
         super().__init__(Course, prompt_course)
+
+    def mark_as_paid(self) -> None:
+        """Asks the user to choose a course and marks the selected course as paid."""
+
+        with self.session_maker.begin() as db_session:
+            # We ask the user to choose a specific course
+            chosen_course = prompt_entity_choice(
+                db_session,
+                self.model,
+                prompt_message="Quel cours voulez-vous marquer comme payé ?",
+            )
+
+            # Then we mark the course as paid
+            chosen_course.paid = True
+
+    def mark_as_unpaid(self) -> None:
+        """Asks the user to choose a course and marks the selected course as unpaid."""
+
+        with self.session_maker.begin() as db_session:
+            # We ask the user to choose a specific course
+            chosen_course = prompt_entity_choice(
+                db_session,
+                self.model,
+                prompt_message="Quel cours voulez-vous marquer comme impayé ?",
+            )
+
+            # Then we mark the course as unpaid
+            chosen_course.paid = False
 
     def display_gains_since_date(self) -> None:
         """Displays the gains made by the user since a given date."""
