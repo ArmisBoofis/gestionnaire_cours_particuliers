@@ -1,3 +1,5 @@
+#'!/Users/armand_malinvaud/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents/gestionnaire_cours_particuliers/env/bin/python'
+
 """Main script of the tool, orchestrating the different parts of the app,
 all implemented in different files."""
 
@@ -6,7 +8,13 @@ from enum import Enum, auto
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
-from menus import students_menu, houlry_rates_menu, courses_menu, stats_menu
+from choice_menu_wrapper import (
+    choice_menu_wrapper,
+    courses_menu,
+    students_menu,
+    houlry_rates_menu,
+    stats_menu,
+)
 
 
 class MainMenuChoices(Enum):
@@ -22,33 +30,24 @@ class MainMenuChoices(Enum):
 if __name__ == "__main__":
     print("Bienvenue dans le gestionnaire de cours particuliers.")
 
-    current_choice = MainMenuChoices.COURSES
+    user_continues = True
+
+    def quit_manager():
+        """Fonction quitting the program by setting <user_continues> to False."""
+        global user_continues
+        user_continues = False
 
     # Application loop
-    while current_choice != MainMenuChoices.QUIT_APP:
-        # We display the main menu
-        current_choice = inquirer.select(
-            message="Quelle action souhaitez-vous effectuer ?",
-            choices=[
-                Choice(MainMenuChoices.COURSES, "Gérer les cours"),
-                Choice(MainMenuChoices.STUDENTS, "Gérer les élèves"),
-                Choice(MainMenuChoices.HOURLY_RATES, "Gérer les taux horaire"),
-                Choice(MainMenuChoices.STATS, "Consulter les statistiques"),
-                Choice(MainMenuChoices.QUIT_APP, "Quitter le gestionnaire"),
+    while user_continues:
+        choice_menu_wrapper(
+            "Quelle action souhaitez-vous effectuer ?",
+            [
+                ("Gérer les cours", courses_menu),
+                ("Gérer les élèves", students_menu),
+                ("Gérer les taux horaire", houlry_rates_menu),
+                ("Consulter les statistiques", stats_menu),
+                ("Quitter le gestionnaire", quit_manager),
             ],
-        ).execute()
-
-        # We display the sub-menu corresponding to the user choice
-        if current_choice == MainMenuChoices.STUDENTS:
-            students_menu()
-
-        elif current_choice == MainMenuChoices.COURSES:
-            courses_menu()
-
-        elif current_choice == MainMenuChoices.HOURLY_RATES:
-            houlry_rates_menu()
-
-        elif current_choice == MainMenuChoices.STATS:
-            stats_menu()
+        )
 
     print("On se revoit prochainement pour des aventures de folie !")
