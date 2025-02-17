@@ -6,7 +6,7 @@ import datetime
 from decimal import Decimal
 from typing import Type
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.orm import Session
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
@@ -40,8 +40,12 @@ def prompt_entity_choice(
     """Prints a menu asking the user to choose an entity and
     returns the corresponding instance of the model."""
 
-    # List of existing entities
-    stmt = select(model)
+    # List of existing entities : we sort by date the courses
+    if model == Course:
+        stmt = select(model).order_by(desc(model.date))
+    else:
+        stmt = select(model)
+
     entity_list = current_session.scalars(stmt)
 
     # Menu prompting the user to choose an entity

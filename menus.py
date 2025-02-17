@@ -1,7 +1,6 @@
 """File containing the definition of the menu functions, which display
 menus asking the user to make various choices and input necessay information."""
 
-from enum import Enum
 from typing import Tuple, Callable
 
 from InquirerPy import inquirer
