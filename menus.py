@@ -3,7 +3,7 @@ menus asking the user to make various choices and input necessay information."""
 
 from typing import Tuple, Callable
 
-from InquirerPy import inquirer
+from InquirerPy import inquirer, get_style
 from InquirerPy.base.control import Choice
 
 from student_controller import StudentController
@@ -14,10 +14,21 @@ from course_controller import CourseController
 def choice_menu_wrapper(menu_message: str, choices: list[Tuple[str, Callable]]) -> None:
     """Wrapper for inquirer.select ; shortcut allowing to associate functions with choices."""
 
+    # Style used for the menu
+    choice_menu_style = get_style(
+        {
+            "question": "bold #0738DA",
+        },
+        style_override=False,
+    )
+
     # We display the menu
+    print("", end="\n")
+
     user_choice = inquirer.select(
         message=menu_message,
         choices=[Choice(i, choice[0]) for i, choice in enumerate(choices)],
+        style=choice_menu_style,
     ).execute()
 
     # We call the corresonding action
